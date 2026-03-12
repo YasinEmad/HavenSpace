@@ -46,6 +46,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Gallery', href: '/' },
+    { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/connect' },
   ];
 
@@ -67,7 +68,7 @@ export default function Navbar() {
             <Building2 className="w-5 h-5 text-black" />
           </div>
           <span className="text-xl font-bold tracking-tighter text-white uppercase italic">
-            Estate<span className="text-white/50 not-italic font-light">Group</span>
+            Haven<span className="text-white/50 not-italic font-light">Space</span>
           </span>
         </Link>
 

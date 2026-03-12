@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { Award, Users, Globe } from 'lucide-react';
+
 import type { Metadata } from "next"
 
 // ─── Metadata (exported separately in Next.js App Router) ────────────────────
@@ -528,11 +530,8 @@ export default function AboutPage() {
 
         {/* ─── HERO ─── */}
         <section className="hero">
-          <div className="hero-lines">
-            <span /><span /><span />
-          </div>
+         
           <div className="hero-inner">
-            <span className="hero-eyebrow">Real Estate Hub · Est. 2018</span>
             <h1>Find Where<br /><em>Life Begins.</em></h1>
             <p className="hero-sub">
               We connect people with extraordinary properties and the trusted experts
@@ -546,57 +545,6 @@ export default function AboutPage() {
           <div className="scroll-hint">
             <div className="scroll-dot" />
             Scroll
-          </div>
-        </section>
-
-        {/* ─── STATS ─── */}
-        <div className="stats-bar">
-          <div className="stats-inner">
-            {[
-              { end: 12400, suffix: "+", label: "Properties Listed" },
-              { end: 98,    suffix: "%",  label: "Client Satisfaction" },
-              { end: 350,   suffix: "+",  label: "Expert Agents" },
-              { end: 7,     suffix: "yr", label: "Years of Trust" },
-            ].map((s) => (
-              <div key={s.label} className="stat-item">
-                <strong><Counter end={s.end} suffix={s.suffix} /></strong>
-                <span>{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ─── MISSION / VISION ─── */}
-        <section className="section" style={{ background: "var(--cream)" }}>
-          <div className="container">
-            <Reveal>
-              <span className="section-label">Who We Are</span>
-              <h2 className="section-title">
-                Purpose-built for<br />your property journey.
-              </h2>
-            </Reveal>
-            <div className="mv-grid">
-              <Reveal delay={100} from="left">
-                <div className="mv-card">
-                  <h2>Our Mission</h2>
-                  <p>
-                    To make property search simple, transparent, and enjoyable —
-                    providing a curated selection of listings and powerful tools that
-                    empower buyers and sellers alike with real, actionable insight.
-                  </p>
-                </div>
-              </Reveal>
-              <Reveal delay={200} from="right">
-                <div className="mv-card">
-                  <h2>Our Vision</h2>
-                  <p>
-                    A world where everyone has access to trustworthy real estate
-                    information and can confidently make decisions that shape their
-                    lives — no matter their budget, background, or experience level.
-                  </p>
-                </div>
-              </Reveal>
-            </div>
           </div>
         </section>
 
@@ -622,76 +570,107 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ─── PROCESS ─── */}
-        <section className="section" style={{ background: "#fff" }}>
-          <div className="container">
-            <Reveal>
-              <span className="section-label">How It Works</span>
-              <h2 className="section-title">Four steps to your new home.</h2>
-            </Reveal>
-            <div className="process-steps">
-              {[
-                { n: "01", title: "Create Your Profile",    desc: "Tell us your goals, budget, and lifestyle preferences in minutes." },
-                { n: "02", title: "Discover Properties",    desc: "Browse curated listings matched to exactly what you're looking for." },
-                { n: "03", title: "Meet Your Agent",        desc: "Get paired with a local expert who knows your target market inside-out." },
-                { n: "04", title: "Close With Confidence",  desc: "Sign, seal, and celebrate — guided every step of the way." },
-              ].map((s, i) => (
-                <Reveal key={s.n} delay={i * 120}>
-                  <div className="step">
-                    <div className="step-num">{s.n}</div>
-                    <h3>{s.title}</h3>
-                    <p>{s.desc}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* ─── COMPANY HISTORY ─── */}
+        {/* ─── OUR STORY SECTION ─── */}
+<section className="relative py-24 bg-[#1a1614] overflow-hidden border-t border-white/5">
+  {/* Side Branding Label (Visible on XL screens) */}
+  <div className="absolute top-24 -left-16 select-none pointer-events-none hidden xl:block">
+    <span className="text-[140px] font-black text-white/[0.02] uppercase tracking-tighter rotate-90 inline-block">
+      Heritage
+    </span>
+  </div>
 
-        {/* ─── VALUES ─── */}
-        <div className="values-strip">
-          <Reveal>
-            <h2>What We Stand For</h2>
-          </Reveal>
-          <div className="values-pills">
-            {["Transparency","Integrity","Accessibility","Innovation","Community","Excellence","Trust","Empathy","Sustainability","Simplicity"].map((v) => (
-              <span key={v} className="pill">{v}</span>
-            ))}
+  <div className="container mx-auto px-6 relative z-10">
+    <div className="grid lg:grid-cols-12 gap-16 items-start">
+      
+      {/* 1. Header & Quick Stats */}
+      <div className="lg:col-span-5 space-y-10">
+        <Reveal>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-[1px] w-12 bg-emerald-500/50" />
+              <span className="text-[10px] uppercase tracking-[0.4em] text-emerald-400 font-bold">
+                The Narrative
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-[0.9] uppercase italic">
+              Building Trust <br /> 
+              <span className="text-white/20 not-italic">Since 2018</span>
+            </h2>
+          </div>
+        </Reveal>
+
+        {/* Scannable Milestones */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-sm group hover:bg-white/[0.04] transition-all">
+            <p className="text-4xl font-bold text-white tracking-tighter mb-1">8k+</p>
+            <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Families Housed</p>
+          </div>
+          <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-sm group hover:bg-white/[0.04] transition-all">
+            <p className="text-4xl font-bold text-white tracking-tighter mb-1">12+</p>
+            <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Primary Markets</p>
           </div>
         </div>
+      </div>
 
-        {/* ─── TEAM ─── */}
-        <section className="section" style={{ background: "var(--cream)" }}>
-          <div className="container">
-            <Reveal>
-              <span className="section-label">Our People</span>
-              <h2 className="section-title">The team behind the platform.</h2>
-            </Reveal>
-            <div className="team-grid">
-              {[
-                { initials: "SO", name: "Sarah O'Brien",    role: "Founder & CEO",        delay: 0   },
-                { initials: "MK", name: "Marcus Klein",     role: "Chief of Real Estate",  delay: 80  },
-                { initials: "AY", name: "Aisha Yeboah",     role: "Head of Product",        delay: 160 },
-                { initials: "JL", name: "James Larkin",     role: "Head of Technology",     delay: 240 },
-                { initials: "PR", name: "Priya Reddy",      role: "Customer Experience",    delay: 320 },
-              ].map((t) => (
-                <TeamCard key={t.name} {...t} />
-              ))}
+      {/* 2. Narrative Content */}
+      <div className="lg:col-span-7 lg:pl-16 border-l border-white/10 relative">
+        <div className="space-y-16">
+          
+          {/* Chapter 1 */}
+          <Reveal delay={100}>
+            <div className="relative">
+              {/* Glow point on the border line */}
+              <div className="absolute -left-[69px] top-2 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)]" />
+              <p className="text-2xl text-white/80 leading-snug font-medium mb-6">
+                What started as a single-city vision has evolved into a <span className="text-white">premier real estate infrastructure</span> serving thousands.
+              </p>
+              <p className="text-white/50 leading-relaxed text-lg">
+                Real Estate Hub was founded with a singular vision: to transform the property experience 
+                by making it transparent, accessible, and human-centered. We bridge the gap between 
+                high-end architecture and the modern homebuyer.
+              </p>
             </div>
-          </div>
-        </section>
-
-        {/* ─── CTA ─── */}
-        <section className="cta-section">
-          <Reveal>
-            <h2>Ready to find your forever home?</h2>
-            <p>
-              Join over 12,000 happy homeowners who trusted Real Estate Hub to make
-              the biggest decision of their lives feel like the easiest one.
-            </p>
-            <a href="/connect" className="btn-ink">Get in Touch →</a>
           </Reveal>
-        </section>
+
+          {/* Chapter 2 */}
+          <Reveal delay={200}>
+            <div className="relative">
+              <div className="absolute -left-[69px] top-2 w-2 h-2 rounded-full bg-white/10" />
+              <p className="text-white/50 leading-relaxed text-lg">
+                Today, we continue to invest heavily in agent training and digital accessibility. 
+                Staying true to our core values of <span className="text-white/80 italic">integrity and innovation</span>, 
+                every property we list strengthens our commitment to redefine the standards 
+                of the real estate industry.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Chapter 3: Global Icons */}
+          <Reveal delay={300}>
+            <div className="pt-6 flex flex-wrap gap-10 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+              <div className="flex items-center gap-3">
+                <Award className="w-5 h-5" />
+                <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Excellence</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Users className="w-5 h-5" />
+                <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Community</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Globe className="w-5 h-5" />
+                <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Presence</span>
+              </div>
+            </div>
+          </Reveal>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
       </div>
     </>

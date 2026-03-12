@@ -424,18 +424,6 @@ export default function Home() {
               <button className="btn-ghost">Learn More</button>
             </div>
 
-            <div className="hero-stats">
-              {[
-                { value: '5000+', label: 'Active Listings' },
-                { value: '10000+', label: 'Happy Clients' },
-                { value: '50+', label: 'Expert Agents' },
-              ].map((s) => (
-                <div key={s.label} className="hero-stat">
-                  <strong><Counter value={s.value} /></strong>
-                  <span>{s.label}</span>
-                </div>
-              ))}
-            </div>
 
             <div className="search-wrapper">
               <div className="search-inner">
@@ -501,11 +489,9 @@ export default function Home() {
               Join thousands of happy homeowners who trusted Real Estate Hub to
               make the biggest decision of their lives feel effortless.
             </p>
-            <Link href="/admin/login">
-              <span className="btn-white">Get Started Today <ArrowRight size={16} /></span>
-            </Link>
+          
             <div className="cta-feats">
-              {['No sign-up fee', '5,000+ verified listings', 'Expert agents on call'].map((f) => (
+              {['No sign-up fee', 'Expert agents on call'].map((f) => (
                 <div key={f} className="cta-feat">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
                   {f}
