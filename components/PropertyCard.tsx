@@ -22,7 +22,8 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  const imageUrl = property.imageUrls?.[0] || '/placeholder-property.jpg';
+  const placeholderImage = '/placeholder-property.png';
+  const imageUrl = property.imageUrls?.[0] || placeholderImage;
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-[#231e1b]">
@@ -34,7 +35,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           className="object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = '/placeholder-property.jpg';
+            target.src = placeholderImage;
           }}
         />
         <Badge className="absolute top-4 right-4 bg-[#231e1b] text-primary-foreground capitalize">

@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import ConfirmDialog from '@/components/ui/confirm-dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PropertyManagement from './admin/PropertyManagement';
 import LeadsTable from './admin/LeadsTable';
@@ -75,6 +76,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [leadsLoading, setLeadsLoading] = useState(true);
   const [leads, setLeads] = useState<any[]>([]);
+  const [leadToDelete, setLeadToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStats();
@@ -115,6 +117,24 @@ export default function AdminDashboard() {
       console.error('Error fetching leads:', error);
     } finally {
       setLeadsLoading(false);
+    }
+  };
+
+  const handleDeleteLeadConfirm = async () => {
+    if (!leadToDelete) return;
+
+    try {
+      const res = await fetch(`/api/leads/${leadToDelete}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchLeads();
+      } else {
+        alert('Failed to delete lead');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting lead');
+    } finally {
+      setLeadToDelete(null);
     }
   };
 
@@ -242,23 +262,24 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <LeadsTable
-                  leads={leads}
-                  onDelete={async (id: string) => {
-                    if (!confirm('Delete this lead?')) return;
-                    try {
-                      const res = await fetch(`/api/leads/${id}`, { method: 'DELETE' });
-                      if (res.ok) {
-                        fetchLeads();
-                      } else {
-                        alert('Failed to delete lead');
-                      }
-                    } catch (err) {
-                      console.error(err);
-                      alert('Error deleting lead');
-                    }
-                  }}
-                />
+                leads={leads}
+                onDelete={(id: string) => {
+                  setLeadToDelete(id);
+                }}
+              />
               )}
+
+              <ConfirmDialog
+                open={Boolean(leadToDelete)}
+                onOpenChange={(open) => {
+                  if (!open) setLeadToDelete(null);
+                }}
+                title="Delete lead?"
+                description="This action is permanent. Are you sure you want to delete this lead?"
+                confirmLabel="Delete"
+                cancelLabel="Cancel"
+                onConfirm={handleDeleteLeadConfirm}
+              />
             </div>
           </TabsContent>
         </Tabs>

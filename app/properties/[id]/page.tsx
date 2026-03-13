@@ -108,7 +108,8 @@ export default function PropertyDetailPage() {
     );
   }
 
-  const imageUrl = property.imageUrls?.[selectedImageIndex] || '/placeholder-property.jpg';
+  const placeholderImage = '/placeholder-property.png';
+  const imageUrl = property.imageUrls?.[selectedImageIndex] || placeholderImage;
 
   return (
     <div className="min-h-screen bg-[#1a1614] text-white">

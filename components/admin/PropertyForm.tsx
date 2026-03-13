@@ -59,6 +59,7 @@ export default function PropertyForm({
   const [property, setProperty] = useState<PropertyData>(emptyProperty);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
@@ -103,6 +104,35 @@ export default function PropertyForm({
         imageUrls: [...prev.imageUrls, imageUrl],
       }));
       setImageUrl('');
+    }
+  };
+
+  const handleUploadImages = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    setError('');
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      Array.from(files).forEach((file) => formData.append('images', file));
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+      setProperty((prev) => ({
+        ...prev,
+        imageUrls: [...prev.imageUrls, ...(data.urls || [])],
+      }));
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload images');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -355,7 +385,26 @@ export default function PropertyForm({
           {/* Section 4: Media */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white/80 border-b border-white/10 pb-2">Media</h3>
+
             <div>
+              <Label>Upload Images</Label>
+              <div className="flex items-center gap-3 mb-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleUploadImages(e.target.files)}
+                  disabled={uploading}
+                  className="text-sm text-white file:bg-white/10 file:text-white file:border-white/10 file:px-3 file:py-2 file:rounded-md file:border file:border-white/10 bg-black/20 rounded-md"
+                />
+                {uploading && (
+                  <span className="text-sm text-white/60">Uploading...</span>
+                )}
+              </div>
+              <p className="text-xs text-white/40 mb-4">
+                Select one or more images to upload. Uploaded images will be stored in Cloudinary and saved as URLs.
+              </p>
+
               <Label>Image URLs</Label>
               <div className="flex gap-3 mb-4">
                 <Input

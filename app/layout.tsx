@@ -11,7 +11,7 @@ const geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'Real Estate Hub - Find Your Dream Property',
   description: 'Discover beautiful homes and properties in your ideal location. Browse listings, view details, and connect with agents.',
-  generator: 'v0.app',
+  generator: 'Next.js',
   icons: {
     
   },

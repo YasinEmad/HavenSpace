@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import ConfirmDialog from '@/components/ui/confirm-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,6 +41,7 @@ export default function PropertyManagement({
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(isAddingNew);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [propertyToDelete, setPropertyToDelete] = useState<{ id: string; title: string } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   // use "all" as the default so we never pass an empty string to SelectItem
   const [filterStatus, setFilterStatus] = useState('all');
@@ -78,11 +80,19 @@ export default function PropertyManagement({
     onPropertyChange?.();
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this property?')) return;
+  const handleDelete = (id: string) => {
+    const property = properties.find((p) => p._id === id);
+    setPropertyToDelete({
+      id,
+      title: property?.title || 'this property',
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!propertyToDelete) return;
 
     try {
-      const res = await fetch(`/api/properties/${id}`, {
+      const res = await fetch(`/api/properties/${propertyToDelete.id}`, {
         method: 'DELETE',
       });
 
@@ -95,6 +105,8 @@ export default function PropertyManagement({
     } catch (error) {
       console.error('Error deleting property:', error);
       alert('Error deleting property');
+    } finally {
+      setPropertyToDelete(null);
     }
   };
 
@@ -171,11 +183,24 @@ export default function PropertyManagement({
             {properties.length === 0 ? 'No properties yet. Create your first listing!' : 'No properties match your filters.'}
           </div>
         ) : (
-          <PropertyTable
-            properties={filteredProperties}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <>
+            <PropertyTable
+              properties={filteredProperties}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+            <ConfirmDialog
+              open={Boolean(propertyToDelete)}
+              onOpenChange={(open) => {
+                if (!open) setPropertyToDelete(null);
+              }}
+              title="Delete property?"
+              description={`This action cannot be undone. Delete “${propertyToDelete?.title}”?`}
+              confirmLabel="Delete"
+              cancelLabel="Cancel"
+              onConfirm={handleConfirmDelete}
+            />
+          </>
         )}
       </CardContent>
     </Card>
