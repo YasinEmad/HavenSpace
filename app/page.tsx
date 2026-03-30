@@ -416,29 +416,14 @@ export default function Home() {
             </p>
 
             <div className="hero-ctas">
-              <Link href="/admin/login">
+              <Link href="/gallery">
                 <button className="btn-brass">
                   Start Searching <ArrowRight size={16} />
                 </button>
               </Link>
-              <button className="btn-ghost">Learn More</button>
-            </div>
-
-
-            <div className="search-wrapper">
-              <div className="search-inner">
-                <PropertySearchCard
-                  onSearch={handleSearch}
-                  searchCity={searchCity}
-                  setSearchCity={setSearchCity}
-                  minPrice={minPrice}
-                  setMinPrice={setMinPrice}
-                  maxPrice={maxPrice}
-                  setMaxPrice={setMaxPrice}
-                  propertyType={propertyType}
-                  setPropertyType={setPropertyType}
-                />
-              </div>
+              <Link href="/about">
+                <button className="btn-ghost">Learn More</button>
+              </Link>
             </div>
           </div>
 
@@ -448,38 +433,38 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ═══ FEATURED PROPERTIES ═══ */}
-        <section className="section text-white relative" style={{ background: '#231e1b' }}>
-          <div className="hero-bg" />
+        {/* ═══ WHY US ── */}
+        <section className="why-bg">
           <div className="container">
             <Reveal>
               <div className="section-header">
                 <div>
-                  <span className="section-eyebrow" style={{ color: '#fff' }}>Handpicked For You</span>
-                  <h2 className="section-title" style={{ color: '#fff' }}>
-                    {hasSearched ? 'Search Results' : 'Featured Properties'}
-                  </h2>
+                  <span className="section-eyebrow">Why Choose Us</span>
+                  <h2 className="section-title">Your Trusted Real Estate Partner</h2>
                 </div>
-                {!hasSearched && (
-                  <Link href="/listings" className="section-link text-white">
-                    View all listings <ArrowRight size={15} />
-                  </Link>
-                )}
               </div>
             </Reveal>
             <Reveal delay={120}>
-              <PropertyGrid
-                searchCity={searchCity}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
-                propertyType={propertyType}
-                hasSearched={hasSearched}
-              />
+              <div className="why-grid">
+                {[
+                  { icon: Shield, title: 'Verified Listings', desc: 'Every property is thoroughly vetted and verified for authenticity and quality.' },
+                  { icon: TrendingUp, title: 'Market Insights', desc: 'Stay ahead with real-time market data and expert analysis.' },
+                  { icon: Heart, title: 'Personalized Service', desc: 'Dedicated agents provide tailored guidance for your unique needs.' },
+                ].map((item, i) => (
+                  <div key={i} className="why-card">
+                    <div className="why-icon-wrap">
+                      <item.icon size={24} />
+                    </div>
+                    <h3>{item.title}</h3>
+                    <p>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
             </Reveal>
           </div>
         </section>
 
-
+     
 
         {/* ═══ CTA BOTTOM ═══ */}
         <section className="cta-bottom">

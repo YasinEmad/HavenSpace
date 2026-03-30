@@ -46,6 +46,7 @@ export default function PropertySearchCard({
   setPropertyType,
 }: PropertySearchCardProps) {
   const [focused, setFocused] = useState<string | null>(null);
+  const [transactionType] = useState<'buy' | 'rent' | 'new-homes'>('buy');
 
   return (
     <>
@@ -96,6 +97,11 @@ export default function PropertySearchCard({
 
         /* ── Body ── */
         .psc-body { padding: 2rem 2rem 1.75rem; }
+
+        /* ── Transaction mode label ── */
+        .psc-mode { margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+        .psc-mode-label { font-size: .7rem; text-transform: uppercase; color: rgba(255,255,255,.45); letter-spacing: .14em; }
+        .psc-mode-value { font-size: .85rem; font-weight: 700; color: #fff; }
 
         /* ── Fields row ── */
         .psc-fields {
@@ -223,18 +229,11 @@ export default function PropertySearchCard({
       `}</style>
 
       <div className="psc-wrap">
-
-        {/* Tab bar */}
-        <div className="psc-tabs">
-          {['Buy', 'Rent', 'New Homes'].map((tab, i) => (
-            <button key={tab} className={`psc-tab${i === 0 ? ' active' : ''}`}>
-              {i === 0 && <span className="psc-tab-dot" />}
-              {tab}
-            </button>
-          ))}
-        </div>
-
         <div className="psc-body">
+          <div className="psc-mode">
+            <span className="psc-mode-label">Mode:</span>
+            <span className="psc-mode-value">{transactionType === 'buy' ? 'Buy' : transactionType === 'rent' ? 'Rent' : 'New Homes'}</span>
+          </div>
 
           {/* Fields */}
           <div className="psc-fields">

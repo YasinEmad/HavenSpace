@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import PropertyCard from './PropertyCard';
 import { Empty } from '@/components/ui/empty';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Property {
   _id: string;
@@ -27,6 +29,26 @@ interface PropertyGridProps {
   hasSearched: boolean;
 }
 
+// 1. Realistic Skeleton Loader to match your PropertyCard
+const PropertySkeleton = () => (
+  <div className="bg-[#1a1614] rounded-2xl overflow-hidden border border-white/5 h-[450px]">
+    <Skeleton className="h-72 w-full bg-white/5" />
+    <div className="p-6 space-y-4">
+      <Skeleton className="h-6 w-3/4 bg-white/5" />
+      <Skeleton className="h-4 w-1/2 bg-white/5" />
+      <div className="grid grid-cols-3 gap-2 py-2">
+        <Skeleton className="h-12 bg-white/5 rounded-xl" />
+        <Skeleton className="h-12 bg-white/5 rounded-xl" />
+        <Skeleton className="h-12 bg-white/5 rounded-xl" />
+      </div>
+      <div className="flex justify-between items-center pt-2">
+        <Skeleton className="h-8 w-24 bg-white/5" />
+        <Skeleton className="h-4 w-16 bg-white/5" />
+      </div>
+    </div>
+  </div>
+);
+
 export default function PropertyGrid({
   searchCity,
   minPrice,
@@ -35,90 +57,128 @@ export default function PropertyGrid({
   hasSearched,
 }: PropertyGridProps) {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!hasSearched) {
-      fetchFeaturedProperties();
-    } else {
-      fetchSearchResults();
-    }
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams({ status: 'available' });
+
+        if (hasSearched) {
+          if (searchCity) params.append('city', searchCity);
+          if (minPrice) params.append('minPrice', minPrice);
+          if (maxPrice) params.append('maxPrice', maxPrice);
+          if (propertyType) params.append('propertyType', propertyType);
+        } else {
+          params.append('_limit', '6');
+        }
+
+        const res = await fetch(`/api/properties?${params.toString()}`);
+        if (!res.ok) throw new Error('Failed to fetch properties');
+        const data = await res.json();
+        setProperties(data);
+        setError('');
+      } catch (err) {
+        setError('We encountered an issue loading listings. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [searchCity, minPrice, maxPrice, propertyType, hasSearched]);
 
-  const fetchFeaturedProperties = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/properties?status=available&_limit=6`);
-      const data = await res.json();
-      setProperties(data);
-      setError('');
-    } catch (err) {
-      setError('Failed to fetch properties');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSearchResults = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams({
-        status: 'available',
-      });
-
-      if (searchCity) params.append('city', searchCity);
-      if (minPrice) params.append('minPrice', minPrice);
-      if (maxPrice) params.append('maxPrice', maxPrice);
-      if (propertyType) params.append('propertyType', propertyType);
-
-      const res = await fetch(`/api/properties?${params.toString()}`);
-      const data = await res.json();
-      setProperties(data);
-      setError('');
-    } catch (err) {
-      setError('Failed to fetch search results');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Loading State
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="bg-[#231e1b] animate-pulse h-80 rounded-lg" />
+          <PropertySkeleton key={i} />
         ))}
       </div>
     );
   }
 
+  // Error State
   if (error) {
-    return <div className="text-destructive text-center py-8">{error}</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 bg-red-500/5 rounded-3xl border border-red-500/10">
+        <p className="text-red-400 font-medium">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="mt-4 text-sm text-white underline underline-offset-4"
+        >
+          Retry Connection
+        </button>
+      </div>
+    );
   }
 
+  // Empty State
   if (properties.length === 0) {
     return (
-      <Empty
-        icon="House"
-        className="text-[#231e1b] bg-[#231e1b]/10"
-        title={hasSearched ? 'No properties found' : 'No featured properties'}
-        description={
-          hasSearched
-            ? 'Try adjusting your search criteria'
-            : 'Check back soon for more listings'
-        }
-      />
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="py-20"
+      >
+        <Empty
+          icon="House"
+          className="bg-[#1a1614] border border-white/5 p-12 rounded-3xl"
+          title={hasSearched ? 'No matching retreats' : 'No properties yet'}
+          description={
+            hasSearched
+              ? 'Try widening your price range or exploring another city.'
+              : 'Our curators are currently adding new exclusive listings.'
+          }
+        />
+      </motion.div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {properties.map((property) => (
-        <Link key={property._id} href={`/properties/${property._id}`}>
-          <PropertyCard property={property} />
-        </Link>
-      ))}
+    <div className="space-y-8">
+      {/* Results Header */}
+      <div className="flex justify-between items-end">
+        <div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            {hasSearched ? 'Search Results' : 'Featured Residences'}
+          </h2>
+          <p className="text-gray-400 text-sm">
+            {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
+          </p>
+        </div>
+      </div>
+
+      {/* Grid with Framer Motion Stagger */}
+      <motion.div 
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+          }
+        }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        {properties.map((property) => (
+          <motion.div
+            key={property._id}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0 }
+            }}
+          >
+            <Link href={`/properties/${property._id}`} className="block">
+              <PropertyCard property={property} />
+            </Link>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 }
